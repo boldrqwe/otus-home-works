@@ -1,7 +1,5 @@
 package ru.otus;
 
-import java.util.StringJoiner;
-
 import com.google.common.base.Joiner;
 
 public class HelloOtus {
