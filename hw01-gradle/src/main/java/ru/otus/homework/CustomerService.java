@@ -1,25 +1,20 @@
 package ru.otus.homework;
 
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 public class CustomerService {
 
-    private HashMap<Customer, String> map = new HashMap();
+    private TreeMap<Customer, String> map = new TreeMap<>();
 
     public Map.Entry<Customer, String> getSmallest() {
-        Map.Entry<Customer, String> entry1 = map.entrySet().stream()
-                .min(Comparator.comparing(entry -> entry.getKey().getScores()))
-                .orElseThrow(() -> new RuntimeException("сервис пуст"));
-
+        Map.Entry<Customer, String> entry = map.firstEntry();
         CustomerService customerService = new CustomerService();
-        var customer = entry1.getKey();
-        var data = entry1.getValue();
+        var customer = entry.getKey();
+        var data = entry.getValue();
         customerService.add(new Customer(customer.getId(), customer.getName(), customer.getScores()), data);
-
         return customerService.getNext(new Customer(0L, "", 0L));
     }
 

@@ -1,9 +1,9 @@
 package ru.otus.homework;
 
+import java.util.Comparator;
 import java.util.Objects;
 
-public class Customer {
-
+public class Customer implements Comparable<Customer> {
 
     private final long id;
     private String name;
@@ -54,4 +54,8 @@ public class Customer {
         return Objects.hash(id);
     }
 
+    @Override
+    public int compareTo(Customer o) {
+        return Long.compare(this.scores, o.scores);
+    }
 }
