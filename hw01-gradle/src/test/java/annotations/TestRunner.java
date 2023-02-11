@@ -1,9 +1,11 @@
 package annotations;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import homework.AnnotationTest;
 
@@ -20,33 +22,23 @@ public class TestRunner {
         var pass = 0;
         var fail = 0;
 
-        Optional<Method> before =
-                Arrays.stream(declaredMethods)
-                        .filter(method -> method.isAnnotationPresent(Before.class))
-                        .findFirst();
+        Optional<Method> before = getMethodByAnnotation(declaredMethods, Before.class).findFirst();
 
-        Optional<Method> after =
-                Arrays.stream(declaredMethods)
-                        .filter(method -> method.isAnnotationPresent(After.class))
-                        .findFirst();
+        Optional<Method> after = getMethodByAnnotation(declaredMethods, After.class).findFirst();
 
-        var tests =
-                Arrays.stream(declaredMethods)
-                        .filter(method -> method.isAnnotationPresent(Test.class))
-                        .toList();
-        Optional<Object> beforeClass;
+        var tests = getMethodByAnnotation(declaredMethods, Test.class).toList();
         for (var method : tests) {
             method.setAccessible(true);
-            beforeClass = before.map(b -> runMethod(clazz, b));
+            Object newInstance = getNewInstance(clazz);
+            before.map(b -> runMethod(newInstance, b));
 
             ++count;
             try {
                 System.out.println("test № " + count);
                 System.out.println("");
-                Object o = beforeClass.get();
-                method.invoke(o);
+                method.invoke(newInstance);
                 ++pass;
-                after.ifPresent(a -> runMethod(o.getClass(), a));
+                runMethod(newInstance, after.get());
             } catch (IllegalAccessException e) {
                 System.out.println(e.getMessage());
             } catch (InvocationTargetException e) {
@@ -65,25 +57,27 @@ public class TestRunner {
     private static Object getNewInstance(Class<?> clazz) {
         try {
             return clazz.newInstance();
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static Object runMethod(Class<?> clazz, Method method) {
+    private static Stream<Method> getMethodByAnnotation(Method[] declaredMethods,
+                                                        Class<? extends Annotation> annotationClass) {
+        return Arrays.stream(declaredMethods)
+                .filter(method -> method.isAnnotationPresent(annotationClass));
+    }
+
+    private static Object runMethod(Object instance, Method method) {
         method.setAccessible(true);
-        Object obj = null;
         try {
-            obj = clazz.newInstance();
-            method.invoke(obj);
-            return obj;
+            method.invoke(instance);
+            return instance;
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         System.out.println("");
-        return obj;
+        return instance;
     }
 }
 
