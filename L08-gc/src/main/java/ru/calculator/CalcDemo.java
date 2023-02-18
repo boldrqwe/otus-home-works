@@ -19,13 +19,11 @@ public class CalcDemo {
         var summator = new Summator();
         long startTime = System.currentTimeMillis();
 
+
+
         for (var idx = 0; idx < counter; idx++) {
             var data = new Data(idx);
             summator.calc(data);
-
-            if (idx % 1243 == 0) {
-                System.out.println(LocalDateTime.now() + " current idx:" + idx);
-            }
         }
 
         long delta = System.currentTimeMillis() - startTime;

@@ -1,21 +1,26 @@
 package ru.calculator;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
+import java.util.Stack;
 
 public class Summator {
-    private Integer sum = 0;
-    private Integer prevValue = 0;
-    private Integer prevPrevValue = 0;
-    private Integer sumLastThreeValues = 0;
-    private Integer someValue = 0;
-    private final List<Data> listValues = new ArrayList<>();
+    private int sum = 0;
+    private int prevValue = 0;
+    private int prevPrevValue = 0;
+    private int sumLastThreeValues = 0;
+    private int someValue = 0;
+    private Data[] listValues = new Data[1];
 
     //!!! сигнатуру метода менять нельзя
     public void calc(Data data) {
-        listValues.add(data);
-        if (listValues.size() % 1246 == 0) {
-            listValues.clear();
+        listValues[0] = data;
+        if (listValues.length % 1246 == 0) {
+            listValues = new Data[1];
         }
         sum += data.getValue();
 
@@ -26,27 +31,27 @@ public class Summator {
 
         for (var idx = 0; idx < 3; idx++) {
             someValue += (sumLastThreeValues * sumLastThreeValues / (data.getValue() + 1) - sum);
-            someValue = Math.abs(someValue) + listValues.size();
+            someValue = Math.abs(someValue) + listValues.length;
         }
     }
 
-    public Integer getSum() {
+    public int getSum() {
         return sum;
     }
 
-    public Integer getPrevValue() {
+    public int getPrevValue() {
         return prevValue;
     }
 
-    public Integer getPrevPrevValue() {
+    public int getPrevPrevValue() {
         return prevPrevValue;
     }
 
-    public Integer getSumLastThreeValues() {
+    public int getSumLastThreeValues() {
         return sumLastThreeValues;
     }
 
-    public Integer getSomeValue() {
+    public int getSomeValue() {
         return someValue;
     }
 }
