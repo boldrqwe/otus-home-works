@@ -1,8 +1,7 @@
 import java.util.Arrays;
 import java.util.List;
 
-public class Rub implements Valuta {
-    private final ValutaType valutaType = ValutaType.RUB;
+public class Rub {
 
     enum Nominal implements Nom {
         N5000,
@@ -20,10 +19,8 @@ public class Rub implements Valuta {
     }
 
 
-
-    @Override
     public List<String> getNominal() {
-        return Arrays.stream(Usd.Nominal.values()).map(n -> n.name().replaceAll("N", "")).toList();
+        return Arrays.stream(Nominal.values()).map(n -> n.name().replaceAll("N", "")).toList();
     }
 
 }

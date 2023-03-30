@@ -6,16 +6,9 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Cash {
-    private ValutaType type;
     private HashMap<Nom, Long> nominalToCount;
 
-    public ValutaType getType() {
-        return type;
-    }
 
-    public void setType(ValutaType type) {
-        this.type = type;
-    }
 
     public Map<Nom, Long> getNominalToCount() {
         return nominalToCount;
@@ -25,13 +18,11 @@ public class Cash {
         this.nominalToCount = nominalToCount;
     }
 
-    public Cash(ValutaType type, HashMap<Nom, Long> nominalToCount) {
-        this.type = type;
+    public Cash(HashMap<Nom, Long> nominalToCount) {
         this.nominalToCount = nominalToCount;
     }
 
     public void printCash() {
-        System.out.println(type.name());
         AtomicLong total = new AtomicLong(0L);
         nominalToCount.forEach((n, a) -> {
             System.out.println("номинал: " + n + " количество: " + a);
@@ -61,11 +52,11 @@ public class Cash {
         return this.nominalToCount.keySet().stream().filter(n -> n.getNominalValue() > nominal.getNominalValue()).min(Comparator.comparing(Nom::getNominalValue)).orElse(null);
     }
 
-    public Cash minus(Long amount, ValutaType type) {
+    public Cash minus(Long amount) {
         if (amount > getTotal()) {
             throw new RuntimeException("не достаточно денег");
         }
-        Cash cash = new Cash(type, new HashMap<>());
+        Cash cash = new Cash(new HashMap<>());
 
         long sufficientAmount = 0L;
 
