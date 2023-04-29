@@ -12,25 +12,27 @@ import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class ResourcesFileLoader implements Loader {
 
     private final String filename;
 
     public ResourcesFileLoader(String fileName) {
-        this.filename  = "/" + fileName;
+        this.filename = "/" + fileName;
     }
 
     public List<Measurement> load() {
         List<Measurement> measurements;
         Gson gson = new Gson();
 
-        try (Reader reader = new InputStreamReader(getClass().getResourceAsStream("/inputData.json"), StandardCharsets.UTF_8)) {
-            Type measurementListType = new TypeToken<List<Measurement>>() {}.getType();
+        try (Reader reader = new InputStreamReader(Objects.requireNonNull(getClass().getResourceAsStream(filename)),
+                StandardCharsets.UTF_8)) {
+            Type measurementListType = new TypeToken<List<Measurement>>() {
+            }.getType();
             measurements = gson.fromJson(reader, measurementListType);
         } catch (IOException e) {
-            e.printStackTrace();
-            measurements = Collections.emptyList();
+            throw new RuntimeException(e.getMessage());
         }
 
         return measurements;

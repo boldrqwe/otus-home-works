@@ -14,12 +14,17 @@ import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.stream.JsonReader;
 import ru.otus.model.Measurement;
 
 public class FileSerializer implements Serializer {
 
     private final Path outputPath;
+    Gson gson = new Gson();
 
     public FileSerializer(String outputPath) {
         this.outputPath = Paths.get(outputPath);
@@ -29,15 +34,15 @@ public class FileSerializer implements Serializer {
     public void serialize(Map<String, Double> data) {
         // Сортировка записей по ключу перед добавлением их в LinkedHashMap
         Map<String, Double> sortedData = new TreeMap<>(data);
+        JsonObject jsonObject = new JsonObject();
 
-        String outputJson = sortedData.entrySet().stream()
-                .map(entry -> "\"" + entry.getKey() + "\":" + entry.getValue())
-                .collect(Collectors.joining(",", "{", "}"));
+        sortedData.forEach((s, aDouble) -> jsonObject.add(s, new JsonPrimitive(aDouble)));
+        String s = gson.toJson(jsonObject);
 
         try {
-            Files.write(outputPath, outputJson.getBytes(StandardCharsets.UTF_8));
+            Files.writeString(outputPath, s);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new FileProcessException(e.getMessage());
         }
     }
 }
