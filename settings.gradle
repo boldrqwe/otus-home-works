@@ -1,3 +1,7 @@
 rootProject.name = 'otus-home-work'
 include 'hw01-gradle'
+include 'L18-jdbc'
+include 'L18-jdbc:demo'
+include 'L18-jdbc:homework'
+
 
